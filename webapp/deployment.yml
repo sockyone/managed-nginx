@@ -1,0 +1,830 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rendering-service
+  namespace: ${POD_GROUP}
+  labels:
+    app: rendering-service
+    podname: ${POD_GROUP}
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: rendering-service
+      podname: ${POD_GROUP}
+  template:
+    metadata:
+      labels:
+        app: rendering-service
+        podname: ${POD_GROUP}
+    spec:
+      imagePullSecrets:
+      - name: gitlab-registry-secret
+      containers:
+      - name: rendering-service
+        image: registry.gitlab.com/platform126/system/nginx-openresty/webapp:${COMMIT_ID}
+        resources:
+          limits:
+            cpu: 1
+            memory: 3000Mi
+          requests:
+            cpu: 1
+            memory: 3000Mi
+        env:
+        - name: SERVICE_NAME
+          value: rendering
+        - name: POD_GROUP
+          value: ${POD_GROUP}
+        - name: MONGO_BASE_URI
+          value: "mongodb://ip-192-168-130-240.us-east-2.compute.internal:27017"
+        ports:
+        - containerPort: 3000
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: rendering-service
+  namespace: ${POD_GROUP}
+spec:
+  type: ClusterIP
+  selector:
+    app: rendering-service
+    podname: ${POD_GROUP}
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 30001
+      targetPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service
+  namespace: ${POD_GROUP}
+  labels:
+    app: order-service
+    podname: ${POD_GROUP}
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: order-service
+      podname: ${POD_GROUP}
+  template:
+    metadata:
+      labels:
+        app: order-service
+        podname: ${POD_GROUP}
+    spec:
+      imagePullSecrets:
+      - name: gitlab-registry-secret
+      containers:
+      - name: order-service
+        image: registry.gitlab.com/platform126/system/nginx-openresty/webapp:${COMMIT_ID}
+        resources:
+          limits:
+            cpu: 1
+            memory: 3000Mi
+          requests:
+            cpu: 1
+            memory: 3000Mi
+        env:
+        - name: SERVICE_NAME
+          value: order
+        - name: POD_GROUP
+          value: ${POD_GROUP}
+        - name: MONGO_BASE_URI
+          value: "mongodb://ip-192-168-130-240.us-east-2.compute.internal:27017"
+        ports:
+        - containerPort: 3000
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: order-service
+  namespace: ${POD_GROUP}
+spec:
+  type: ClusterIP
+  selector:
+    app: order-service
+    podname: ${POD_GROUP}
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 30002
+      targetPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-service
+  namespace: ${POD_GROUP}
+  labels:
+    app: product-service
+    podname: ${POD_GROUP}
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: product-service
+      podname: ${POD_GROUP}
+  template:
+    metadata:
+      labels:
+        app: product-service
+        podname: ${POD_GROUP}
+    spec:
+      imagePullSecrets:
+      - name: gitlab-registry-secret
+      containers:
+      - name: product-service
+        image: registry.gitlab.com/platform126/system/nginx-openresty/webapp:${COMMIT_ID}
+        resources:
+          limits:
+            cpu: 1
+            memory: 3000Mi
+          requests:
+            cpu: 1
+            memory: 3000Mi
+        env:
+        - name: SERVICE_NAME
+          value: product
+        - name: POD_GROUP
+          value: ${POD_GROUP}
+        - name: MONGO_BASE_URI
+          value: "mongodb://ip-192-168-130-240.us-east-2.compute.internal:27017"
+        ports:
+        - containerPort: 3000
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: product-service
+  namespace: ${POD_GROUP}
+spec:
+  type: ClusterIP
+  selector:
+    app: product-service
+    podname: ${POD_GROUP}
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 30003
+      targetPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: importer-service
+  namespace: ${POD_GROUP}
+  labels:
+    app: importer-service
+    podname: ${POD_GROUP}
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: importer-service
+      podname: ${POD_GROUP}
+  template:
+    metadata:
+      labels:
+        app: importer-service
+        podname: ${POD_GROUP}
+    spec:
+      imagePullSecrets:
+      - name: gitlab-registry-secret
+      containers:
+      - name: importer-service
+        image: registry.gitlab.com/platform126/system/nginx-openresty/webapp:${COMMIT_ID}
+        resources:
+          limits:
+            cpu: 1
+            memory: 3000Mi
+          requests:
+            cpu: 1
+            memory: 3000Mi
+        env:
+        - name: SERVICE_NAME
+          value: importer
+        - name: POD_GROUP
+          value: ${POD_GROUP}
+        - name: MONGO_BASE_URI
+          value: "mongodb://ip-192-168-130-240.us-east-2.compute.internal:27017"
+        ports:
+        - containerPort: 3000
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: importer-service
+  namespace: ${POD_GROUP}
+spec:
+  type: ClusterIP
+  selector:
+    app: importer-service
+    podname: ${POD_GROUP}
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 30004
+      targetPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: statistic-service
+  namespace: ${POD_GROUP}
+  labels:
+    app: statistic-service
+    podname: ${POD_GROUP}
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: statistic-service
+      podname: ${POD_GROUP}
+  template:
+    metadata:
+      labels:
+        app: statistic-service
+        podname: ${POD_GROUP}
+    spec:
+      imagePullSecrets:
+      - name: gitlab-registry-secret
+      containers:
+      - name: statistic-service
+        image: registry.gitlab.com/platform126/system/nginx-openresty/webapp:${COMMIT_ID}
+        resources:
+          limits:
+            cpu: 1
+            memory: 3000Mi
+          requests:
+            cpu: 1
+            memory: 3000Mi
+        env:
+        - name: SERVICE_NAME
+          value: statistic
+        - name: POD_GROUP
+          value: ${POD_GROUP}
+        - name: MONGO_BASE_URI
+          value: "mongodb://ip-192-168-130-240.us-east-2.compute.internal:27017"
+        ports:
+        - containerPort: 3000
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: statistic-service
+  namespace: ${POD_GROUP}
+spec:
+  type: ClusterIP
+  selector:
+    app: statistic-service
+    podname: ${POD_GROUP}
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 30005
+      targetPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: artwork-service
+  namespace: ${POD_GROUP}
+  labels:
+    app: artwork-service
+    podname: ${POD_GROUP}
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: artwork-service
+      podname: ${POD_GROUP}
+  template:
+    metadata:
+      labels:
+        app: artwork-service
+        podname: ${POD_GROUP}
+    spec:
+      imagePullSecrets:
+      - name: gitlab-registry-secret
+      containers:
+      - name: artwork-service
+        image: registry.gitlab.com/platform126/system/nginx-openresty/webapp:${COMMIT_ID}
+        resources:
+          limits:
+            cpu: 1
+            memory: 3000Mi
+          requests:
+            cpu: 1
+            memory: 3000Mi
+        env:
+        - name: SERVICE_NAME
+          value: artwork
+        - name: POD_GROUP
+          value: ${POD_GROUP}
+        - name: MONGO_BASE_URI
+          value: "mongodb://ip-192-168-130-240.us-east-2.compute.internal:27017"
+        ports:
+        - containerPort: 3000
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: artwork-service
+  namespace: ${POD_GROUP}
+spec:
+  type: ClusterIP
+  selector:
+    app: artwork-service
+    podname: ${POD_GROUP}
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 30006
+      targetPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: external-service
+  namespace: ${POD_GROUP}
+  labels:
+    app: external-service
+    podname: ${POD_GROUP}
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: external-service
+      podname: ${POD_GROUP}
+  template:
+    metadata:
+      labels:
+        app: external-service
+        podname: ${POD_GROUP}
+    spec:
+      imagePullSecrets:
+      - name: gitlab-registry-secret
+      containers:
+      - name: external-service
+        image: registry.gitlab.com/platform126/system/nginx-openresty/webapp:${COMMIT_ID}
+        resources:
+          limits:
+            cpu: 1
+            memory: 3000Mi
+          requests:
+            cpu: 1
+            memory: 3000Mi
+        env:
+        - name: SERVICE_NAME
+          value: external
+        - name: POD_GROUP
+          value: ${POD_GROUP}
+        - name: MONGO_BASE_URI
+          value: "mongodb://ip-192-168-130-240.us-east-2.compute.internal:27017"
+        ports:
+        - containerPort: 3000
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: external-service
+  namespace: ${POD_GROUP}
+spec:
+  type: ClusterIP
+  selector:
+    app: external-service
+    podname: ${POD_GROUP}
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 30007
+      targetPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: woocommerce-service
+  namespace: ${POD_GROUP}
+  labels:
+    app: woocommerce-service
+    podname: ${POD_GROUP}
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: woocommerce-service
+      podname: ${POD_GROUP}
+  template:
+    metadata:
+      labels:
+        app: woocommerce-service
+        podname: ${POD_GROUP}
+    spec:
+      imagePullSecrets:
+      - name: gitlab-registry-secret
+      containers:
+      - name: woocommerce-service
+        image: registry.gitlab.com/platform126/system/nginx-openresty/webapp:${COMMIT_ID}
+        resources:
+          limits:
+            cpu: 1
+            memory: 3000Mi
+          requests:
+            cpu: 1
+            memory: 3000Mi
+        env:
+        - name: SERVICE_NAME
+          value: woocommerce
+        - name: POD_GROUP
+          value: ${POD_GROUP}
+        - name: MONGO_BASE_URI
+          value: "mongodb://ip-192-168-130-240.us-east-2.compute.internal:27017"
+        ports:
+        - containerPort: 3000
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: woocommerce-service
+  namespace: ${POD_GROUP}
+spec:
+  type: ClusterIP
+  selector:
+    app: woocommerce-service
+    podname: ${POD_GROUP}
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 30008
+      targetPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: google-service
+  namespace: ${POD_GROUP}
+  labels:
+    app: google-service
+    podname: ${POD_GROUP}
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: google-service
+      podname: ${POD_GROUP}
+  template:
+    metadata:
+      labels:
+        app: google-service
+        podname: ${POD_GROUP}
+    spec:
+      imagePullSecrets:
+      - name: gitlab-registry-secret
+      containers:
+      - name: google-service
+        image: registry.gitlab.com/platform126/system/nginx-openresty/webapp:${COMMIT_ID}
+        resources:
+          limits:
+            cpu: 1
+            memory: 3000Mi
+          requests:
+            cpu: 1
+            memory: 3000Mi
+        env:
+        - name: SERVICE_NAME
+          value: google
+        - name: POD_GROUP
+          value: ${POD_GROUP}
+        - name: MONGO_BASE_URI
+          value: "mongodb://ip-192-168-130-240.us-east-2.compute.internal:27017"
+        ports:
+        - containerPort: 3000
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: google-service
+  namespace: ${POD_GROUP}
+spec:
+  type: ClusterIP
+  selector:
+    app: google-service
+    podname: ${POD_GROUP}
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 30009
+      targetPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ebay-service
+  namespace: ${POD_GROUP}
+  labels:
+    app: ebay-service
+    podname: ${POD_GROUP}
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ebay-service
+      podname: ${POD_GROUP}
+  template:
+    metadata:
+      labels:
+        app: ebay-service
+        podname: ${POD_GROUP}
+    spec:
+      imagePullSecrets:
+      - name: gitlab-registry-secret
+      containers:
+      - name: ebay-service
+        image: registry.gitlab.com/platform126/system/nginx-openresty/webapp:${COMMIT_ID}
+        resources:
+          limits:
+            cpu: 1
+            memory: 3000Mi
+          requests:
+            cpu: 1
+            memory: 3000Mi
+        env:
+        - name: SERVICE_NAME
+          value: ebay
+        - name: POD_GROUP
+          value: ${POD_GROUP}
+        - name: MONGO_BASE_URI
+          value: "mongodb://ip-192-168-130-240.us-east-2.compute.internal:27017"
+        ports:
+        - containerPort: 3000
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: ebay-service
+  namespace: ${POD_GROUP}
+spec:
+  type: ClusterIP
+  selector:
+    app: ebay-service
+    podname: ${POD_GROUP}
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 30010
+      targetPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shipping-service
+  namespace: ${POD_GROUP}
+  labels:
+    app: shipping-service
+    podname: ${POD_GROUP}
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: shipping-service
+      podname: ${POD_GROUP}
+  template:
+    metadata:
+      labels:
+        app: shipping-service
+        podname: ${POD_GROUP}
+    spec:
+      imagePullSecrets:
+      - name: gitlab-registry-secret
+      containers:
+      - name: shipping-service
+        image: registry.gitlab.com/platform126/system/nginx-openresty/webapp:${COMMIT_ID}
+        resources:
+          limits:
+            cpu: 1
+            memory: 3000Mi
+          requests:
+            cpu: 1
+            memory: 3000Mi
+        env:
+        - name: SERVICE_NAME
+          value: shipping
+        - name: POD_GROUP
+          value: ${POD_GROUP}
+        - name: MONGO_BASE_URI
+          value: "mongodb://ip-192-168-130-240.us-east-2.compute.internal:27017"
+        ports:
+        - containerPort: 3000
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: shipping-service
+  namespace: ${POD_GROUP}
+spec:
+  type: ClusterIP
+  selector:
+    app: shipping-service
+    podname: ${POD_GROUP}
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 30011
+      targetPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: setting-service
+  namespace: ${POD_GROUP}
+  labels:
+    app: setting-service
+    podname: ${POD_GROUP}
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: setting-service
+      podname: ${POD_GROUP}
+  template:
+    metadata:
+      labels:
+        app: setting-service
+        podname: ${POD_GROUP}
+    spec:
+      imagePullSecrets:
+      - name: gitlab-registry-secret
+      containers:
+      - name: setting-service
+        image: registry.gitlab.com/platform126/system/nginx-openresty/webapp:${COMMIT_ID}
+        resources:
+          limits:
+            cpu: 1
+            memory: 3000Mi
+          requests:
+            cpu: 1
+            memory: 3000Mi
+        env:
+        - name: SERVICE_NAME
+          value: setting
+        - name: POD_GROUP
+          value: ${POD_GROUP}
+        - name: MONGO_BASE_URI
+          value: "mongodb://ip-192-168-130-240.us-east-2.compute.internal:27017"
+        ports:
+        - containerPort: 3000
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: setting-service
+  namespace: ${POD_GROUP}
+spec:
+  type: ClusterIP
+  selector:
+    app: setting-service
+    podname: ${POD_GROUP}
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 30012
+      targetPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: billing-service
+  namespace: ${POD_GROUP}
+  labels:
+    app: billing-service
+    podname: ${POD_GROUP}
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: billing-service
+      podname: ${POD_GROUP}
+  template:
+    metadata:
+      labels:
+        app: billing-service
+        podname: ${POD_GROUP}
+    spec:
+      imagePullSecrets:
+      - name: gitlab-registry-secret
+      containers:
+      - name: billing-service
+        image: registry.gitlab.com/platform126/system/nginx-openresty/webapp:${COMMIT_ID}
+        resources:
+          limits:
+            cpu: 1
+            memory: 3000Mi
+          requests:
+            cpu: 1
+            memory: 3000Mi
+        env:
+        - name: SERVICE_NAME
+          value: billing
+        - name: POD_GROUP
+          value: ${POD_GROUP}
+        - name: MONGO_BASE_URI
+          value: "mongodb://ip-192-168-130-240.us-east-2.compute.internal:27017"
+        ports:
+        - containerPort: 3000
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: billing-service
+  namespace: ${POD_GROUP}
+spec:
+  type: ClusterIP
+  selector:
+    app: billing-service
+    podname: ${POD_GROUP}
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 30013
+      targetPort: 3000
+# ---
+# apiVersion: extensions/v1beta1
+# kind: Ingress
+# metadata:
+#   annotations:
+#     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+#     alb.ingress.kubernetes.io/scheme: internal
+#     kubernetes.io/ingress.class: alb
+#   name: ingress-${POD_GROUP}
+#   namespace: ${POD_GROUP}
+# spec:
+#   rules:
+#   - http:
+#       paths:
+#       - backend:
+#           serviceName: rendering-service
+#           servicePort: 30001
+#         path: /rendering/*
+#       - backend:
+#           serviceName: order-service
+#           servicePort: 30002
+#         path: /order/*
+#       - backend:
+#           serviceName: product-service
+#           servicePort: 30003
+#         path: /product/*
+#       # importer
+#       - backend:
+#           serviceName: importer-service
+#           servicePort: 30004
+#         path: /importer/*
+#       # statistics
+#       - backend:
+#           serviceName: statistic-service
+#           servicePort: 30005
+#         path: /statistic/*
+#       # artwork-mgmt
+#       - backend:
+#           serviceName: artwork-service
+#           servicePort: 30006
+#         path: /artwork/*
+#       # external-integration
+#       - backend:
+#           serviceName: external-service
+#           servicePort: 30007
+#         path: /external/*
+#       # woocommerce-integration
+#       - backend:
+#           serviceName: woocommerce-service
+#           servicePort: 30008
+#         path: /woocommerce/*
+#       # google-shopping-integration
+#       - backend:
+#           serviceName: google-service
+#           servicePort: 30009
+#         path: /google/*
+#       # ebay-integration
+#       - backend:
+#           serviceName: ebay-service
+#           servicePort: 30010
+#         path: /ebay/*
+#       # shipping-mgmt/
+#       - backend:
+#           serviceName: shipping-service
+#           servicePort: 30011
+#         path: /shipping/*
+#       # store-setting
+#       - backend:
+#           serviceName: setting-service
+#           servicePort: 30012
+#         path: /setting/*
+#       - backend:
+#           serviceName: billing-service
+#           servicePort: 30013
+#         path: /billing/*
+
+

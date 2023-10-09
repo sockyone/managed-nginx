@@ -1,0 +1,15 @@
+CREATE TABLE routing (
+  domain VARCHAR(50),
+  db VARCHAR(50),
+  pod_group_endpoint VARCHAR(128),
+  INDEX domain (domain)
+)
+
+
+CREATE TABLE routing (
+  domain VARCHAR(50),
+  db VARCHAR(50),
+  pod_group_endpoint VARCHAR(128),
+  configuration VARCHAR(128),
+  INDEX domain (domain)
+)

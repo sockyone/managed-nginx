@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openresty
+  namespace: openresty
+  labels:
+    app: openresty
+    phase: edge
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: openresty
+      phase: edge
+  template:
+    metadata:
+      labels:
+        app: openresty
+        phase: edge
+    spec:
+      imagePullSecrets:
+      - name: gitlab-registry-secret
+      containers:
+      - name: openresty
+        image: registry.gitlab.com/platform126/system/nginx-openresty/nginx-openresty:91d6ae1d17f74e34cad5850576f30d2e8faefa8d
+        resources:
+          limits:
+            cpu: 2
+            memory: 4096Mi
+          requests:
+            cpu: 2
+            memory: 4096Mi
+        ports:
+        - name: http
+          containerPort: 80
+        - name: https
+          containerPort: 443
+---
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: openresty
+  namespace: openresty
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: openresty
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openresty-service
+  namespace: openresty
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb-ip
+spec:
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+  - name: https
+    port: 443
+    targetPort: 443
+  type: LoadBalancer
+  selector:
+    app: openresty
+    phase: edge

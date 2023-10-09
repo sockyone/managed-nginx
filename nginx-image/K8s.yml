@@ -1,0 +1,71 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: lb-agent
+  namespace: openresty
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: lb-agent
+      tier: backend
+      track: stable
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: lb-agent
+        tier: backend
+        track: stable
+    spec:
+      containers:
+        - name: nginx
+          image: sockyone/ilb:4
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 443
+            - containerPort: 80
+        - name: lb-agent
+          image: sockyone/lb-agent
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3999
+          env:
+            - name: MANAGER_URL
+              value: http://ee4a4d683f8e.ngrok.io
+            - name: API_KEY
+              value: Rtmc2VRuZIqAYbqbrmXXtPsM
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb
+  finalizers:
+  - service.kubernetes.io/load-balancer-cleanup
+  - service.k8s.aws/resources
+  name: lb-agent-svc
+  namespace: openresty
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  - name: https
+    port: 443
+    protocol: TCP
+    targetPort: 443
+  selector:
+    app: lb-agent
+    tier: backend
+    track: stable
+  type: LoadBalancer

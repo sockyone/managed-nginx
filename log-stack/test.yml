@@ -1,0 +1,8 @@
+apiVersion: v1
+data:
+  .dockerconfigjson: eyJhdXRocyI6eyJyZWdpc3RyeS5naXRsYWIuY29tIjp7InVzZXJuYW1lIjoibnZnNTgiLCJwYXNzd29yZCI6ImI0NGtoSlZPQHg1YyIsImVtYWlsIjoiZ2lhcEBmb29ibGEuY29tIiwiYXV0aCI6ImJuWm5OVGc2WWpRMGEyaEtWazlBZURWaiJ9fX0=
+kind: Secret
+metadata:
+  name: gitlab-registry
+  namespace: mercozy-com
+type: kubernetes.io/dockerconfigjson

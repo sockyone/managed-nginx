@@ -1,0 +1,115 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rendering-service
+  namespace: pod-group-1
+  labels:
+    app: rendering-service
+    podname: pod-group-1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: rendering-service
+      podname: pod-group-1
+  template:
+    metadata:
+      labels:
+        app: rendering-service
+        podname: pod-group-1
+    spec:
+      imagePullSecrets:
+      - name: gitlab-registry-secret
+      containers:
+      - name: rendering-service
+        image: registry.gitlab.com/platform126/system/nginx-openresty/webapp:cdd15eae83306e43f81ce00abc90fb9d36d193e1
+        resources:
+          limits:
+            cpu: 1
+            memory: 1000Mi
+          requests:
+            cpu: 1
+            memory: 1000Mi
+        env:
+        - name: SERVICE_NAME
+          value: rendering
+        - name: POD_GROUP
+          value: pod-group-1
+        - name: MONGO_BASE_URI
+          value: "mongodb://ip-192-168-130-240.us-east-2.compute.internal:27017"
+        ports:
+        - containerPort: 3000
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: rendering-service
+  namespace: pod-group-1
+spec:
+  type: ClusterIP
+  selector:
+    app: rendering-service
+    podname: pod-group-1
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 30001
+      targetPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service
+  namespace: pod-group-1
+  labels:
+    app: order-service
+    podname: pod-group-1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: order-service
+      podname: pod-group-1
+  template:
+    metadata:
+      labels:
+        app: order-service
+        podname: pod-group-1
+    spec:
+      imagePullSecrets:
+      - name: gitlab-registry-secret
+      containers:
+      - name: order-service
+        image: registry.gitlab.com/platform126/system/nginx-openresty/webapp:cdd15eae83306e43f81ce00abc90fb9d36d193e1
+        resources:
+          limits:
+            cpu: 1
+            memory: 1000Mi
+          requests:
+            cpu: 1
+            memory: 1000Mi
+        env:
+        - name: SERVICE_NAME
+          value: order
+        - name: POD_GROUP
+          value: pod-group-1
+        - name: MONGO_BASE_URI
+          value: "mongodb://ip-192-168-130-240.us-east-2.compute.internal:27017"
+        ports:
+        - containerPort: 3000
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: order-service
+  namespace: pod-group-1
+spec:
+  type: ClusterIP
+  selector:
+    app: order-service
+    podname: pod-group-1
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 30002
+      targetPort: 3000

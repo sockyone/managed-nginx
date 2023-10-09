@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "epxress": "^0.0.1-security",
+    "express": "^4.17.1",
+    "mongoose": "^5.11.10",
+    "uuid": "^8.3.2"
+  }
+}

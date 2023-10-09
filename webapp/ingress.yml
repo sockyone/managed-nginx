@@ -1,0 +1,79 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+    alb.ingress.kubernetes.io/scheme: internal
+    kubernetes.io/ingress.class: alb
+  name: ingress-pod-group-1
+  namespace: pod-group-1
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        backend:
+          serviceName: rendering-service
+          servicePort: 3000
+      - backend:
+          serviceName: rendering-service
+          servicePort: 3000
+        path: /rendering
+      - backend:
+          serviceName: product-service
+          servicePort: 3000
+        path: /product
+      # importer
+      - backend:
+          serviceName: importer-service
+          servicePort: 3000
+        path: /importer
+      # statistics
+      - backend:
+          serviceName: statistic-service
+          servicePort: 3000
+        path: /statistic
+      # order-mgmt
+      - backend:
+          serviceName: order-service
+          servicePort: 3000
+        path: /order
+      # artwork-mgmt
+      - backend:
+          serviceName: artwork-service
+          servicePort: 3000
+        path: /artwork
+      # external-integration
+      - backend:
+          serviceName: external-service
+          servicePort: 3000
+        path: /external
+      # woocommerce-integration
+      - backend:
+          serviceName: woocommerce-service
+          servicePort: 3000
+        path: /woocommerce
+      # google-shopping-integration
+      - backend:
+          serviceName: google-service
+          servicePort: 3000
+        path: /google
+      # ebay-integration
+      - backend:
+          serviceName: ebay-service
+          servicePort: 3000
+        path: /ebay
+      # shipping-mgmt
+      - backend:
+          serviceName: shipping-service
+          servicePort: 3000
+        path: /shipping
+      # store-setting
+      - backend:
+          serviceName: setting-service
+          servicePort: 3000
+        path: /setting
+      - backend:
+          serviceName: billing-service
+          servicePort: 3000
+        path: /billing
